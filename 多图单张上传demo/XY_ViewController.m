@@ -10,6 +10,7 @@
 #import "XY_DisplayPhotosView.h"
 #import "XYNetworking.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "XY_DisplayViewController.h"
 @interface XY_ViewController ()
 
 @property (nonatomic, retain) NSMutableArray *urlArr;
@@ -124,7 +125,15 @@
     }];
 }
 
-
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+    if ([segue.identifier isEqualToString:@"seeDisplayImage"]) {
+        XY_DisplayViewController *displayVC = segue.destinationViewController;
+        if ((self.urlArr.count==self.displayView.imgArr.count)&&self.urlArr.count>0) {
+            displayVC.urlArr = self.urlArr;
+        }
+        
+    }
+}
 
 
 

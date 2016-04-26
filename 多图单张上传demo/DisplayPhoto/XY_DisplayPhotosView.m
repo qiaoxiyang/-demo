@@ -8,7 +8,7 @@
 
 #import "XY_DisplayPhotosView.h"
 #import "CTAssetsPickerController.h"
-
+#import "UIImageView+WebCache.h"
 #import "XY_BigPhotoViewController.h"
 #define kSCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
 #define kSCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
@@ -118,16 +118,10 @@ static const CGFloat margin = 10 ; //间距
             btn = nil;
         }
     }
-    UIImage *img ;
+
     for (int i = 0; i<allImgArr.count; i++) {
         
-        id content = allImgArr[i];
-        if ([content isKindOfClass:[ALAsset class]]) {
-            ALAsset *asset = allImgArr[i];
-            img = [UIImage imageWithCGImage:asset.thumbnail];
-        }else{
-            img = allImgArr[i];
-        }
+       
         
         x = i%row;
         y = i/line;
@@ -136,11 +130,27 @@ static const CGFloat margin = 10 ; //间距
         displayImg.userInteractionEnabled = YES;
         [displayImg setFrame:CGRectMake(x*width+(x+1)*margin, y*(width+margin), width, width)];
         displayImg.tag = i;
-        [displayImg setImage:img];
+        
+        
+        
         [displayImg setContentScaleFactor:[[UIScreen mainScreen] scale]];
         displayImg.contentMode = UIViewContentModeScaleAspectFill;
         displayImg.clipsToBounds = YES;
         displayImg.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+        
+        id content = allImgArr[i];
+        if ([content isKindOfClass:[ALAsset class]]) {
+            ALAsset *asset = allImgArr[i];
+
+            [displayImg setImage:[UIImage imageWithCGImage:asset.thumbnail]];
+        }else if ([content isKindOfClass:[UIImage class]]){
+
+            [displayImg setImage:allImgArr[i]];
+        }
+        else{
+            [displayImg sd_setImageWithURL:[NSURL URLWithString:allImgArr[i]] placeholderImage:[UIImage imageNamed:@"is_placeholdImg"]];
+        }
+        
         
         [self addSubview:displayImg];
         
